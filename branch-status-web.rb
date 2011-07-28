@@ -28,9 +28,9 @@ helpers do
 			branch = @@repo.branch(branch_name)			
 
 			last_branch_commit = branch.gcommit
-			status["Last commit"] =  last_branch_commit.date.strftime("%d.%m.%Y %I:%M:%S")
+			status["Last commit"] =  last_branch_commit.date.strftime("%d.%m.%Y %H:%M:%S")
 			if branch.merged?
-				status["Merged"] = branch.merge_commit.date.strftime("%d.%m.%Y %I:%M:%S")
+				status["Merged"] = branch.merge_commit.date.strftime("%d.%m.%Y %H:%M:%S")
 			else
 				status["Merged"] = "no"
 			end
