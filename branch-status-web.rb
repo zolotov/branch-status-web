@@ -4,7 +4,7 @@ require 'yaml'
 require 'lib/git/lib/gitutils'
 require 'jiraSOAP'
 
-configure { @config = YAML.load_file("config.yml") }
+configure { @config = YAML.load_file("config/config.yml") }
 
 configure do
 	@@repo = GitUtils::Repo.new @config["git"]["path"],
@@ -61,15 +61,14 @@ helpers do
 end
 
 get '/' do
-	erb :index
-end
-
-post '/' do
 	@branch = params[:branch]
-	@statuses = {
-		'Git' => {:image => "/images/git.png", :status => git(@branch)},
-		'JIRA' => {:image => "/images/jira.png", :status => jira(@branch)}
-	}
+	unless @branch.nil?
+		@statuses = {
+			'Git' => {:image => "/images/git.png", :status => git(@branch)},
+			'JIRA' => {:image => "/images/jira.png", :status => jira(@branch)}
+		}
+	end
+
 	erb :index
 end
 
