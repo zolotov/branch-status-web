@@ -1,0 +1,8 @@
+development:
+    git:
+        remote: git://github.com/zolotov/branch-status-web.git
+        path: /tmp/repo
+
+    jira:
+        user: login
+        password: password

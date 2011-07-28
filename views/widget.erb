@@ -1,0 +1,9 @@
+<div>
+	<h1><%= @title %></h1>
+	<img src="<%= @image %>"/>
+	<ul>
+	<% @status.each do |name, value| %>
+		<li><strong><%= name %>:</strong> <%= value %></li>	
+	<% end %>
+	</ul>
+</div>

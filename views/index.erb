@@ -1,0 +1,13 @@
+<form method="POST">
+	<input type="text" name="branch" value="<%= @branch %>"/>
+	<input type="submit" value="Status"/>
+</form>
+
+<% if @statuses %>
+	<% @statuses.each do |name, status| %>
+		<% @title = name %>
+		<% @image = status[:image] %>
+		<% @status = status[:status] %>
+		<%= erb :widget, %>
+	<% end %>
+<% end %>
