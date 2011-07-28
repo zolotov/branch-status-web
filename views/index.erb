@@ -1,7 +1,9 @@
-<form method="POST">
-	<input type="text" name="branch" value="<%= @branch %>"/>
-	<input type="submit" value="Status"/>
-</form>
+<div id="queryPanel">
+	<form id="queryForm" method="GET">
+		<input id="queryField" maxlength="25" placeholder="Branch name" autofocus type="search" name="branch" value="<%= @branch %>"/>
+		<input id="querySubmit" type="submit" value="Status"/>
+	</form>
+</div>
 
 <% if @statuses %>
 	<% @statuses.each do |name, status| %>

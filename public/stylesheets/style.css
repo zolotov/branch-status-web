@@ -1,0 +1,10 @@
+#contentPanel { padding: 20px; border: 1px solid #999; border-radius: 9px;}
+#title { text-align: center; }
+#queryPanel, #queryForm { margin: 0 auto; width: 450px; margin-bottom: 30px; }
+#queryField { width: 100%; height: 30px; font-size: 100%; }
+#querySubmit { display: none; }
+
+.statusPanel { width: 300px; height: 200px; border: 1px solid #efefef; border-radius: 5px; margin: 5px; padding-left: 7px; padding-right: 7px; padding-top: 3px;}
+.statusTitle img { width: 50px; height: 50px; vertical-align:middle; margin-right: 5px;}
+.statusTitle { font-size: 16pt; font-weight: bold; font-width: 100px;}
+.statusDescription ul { list-style-type: none; padding-left: 0; }
