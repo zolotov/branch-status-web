@@ -6,18 +6,19 @@ require 'jiraSOAP'
 
 configure { @config = YAML.load_file("config.yml") }
 
-configure :development do
-	@@repo = GitUtils::Repo.new @config["development"]["git"]["path"],
-		@config["development"]["git"]["remote"]
-	@@repo.fetch 'origin'
-	@@repo.branch.checkout
+configure do
+	@@repo = GitUtils::Repo.new @config["git"]["path"],
+		@config["git"]["remote"]
 
 	@@jira = {}
-	@@jira[:user] = @config["development"]["jira"]["user"]
-	@@jira[:password] = @config["development"]["jira"]["password"]
+	@@jira[:user] = @config["jira"]["user"]
+	@@jira[:password] = @config["jira"]["password"]
 end
 
-@widgets = ['jira', 'git']
+configure do
+	@@repo.fetch 'origin'
+	@@repo.branch.checkout
+end
 
 helpers do 
 	def git(branch_name)
