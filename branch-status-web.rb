@@ -90,10 +90,10 @@ get '/' do
 end
 
 get '/timeline/:branch' do |branch_name|
-	@timeline = {}
-	@timeline.merge! jira_timeline branch_name
-	@timeline.merge! git_timeline branch_name
-	@timeline.sort
-
+	timeline = {}
+	timeline.merge! jira_timeline branch_name
+	timeline.merge! git_timeline branch_name
+	
+	@timeline = timeline.sort.reverse
 	erb :timeline, :layout => !request.xhr?
 end
