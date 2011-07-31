@@ -84,9 +84,12 @@ helpers do
 end
 
 get '/' do
-	@branch_name = params[:branch]
-	@branch = branch @branch_name
-	@status = @branch.merged? ? "Merged" : "Not merged"
+	unless params[:branch].nil?
+		@branch_name = params[:branch]
+		@branch = branch @branch_name
+		@status = @branch.merged? ? "Merged" : "Not merged"
+	end
+
 	erb :index
 end
 

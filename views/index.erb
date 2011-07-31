@@ -5,6 +5,8 @@
 	</form>
 </div>
 
+<% if @status %>
+
 <h1 id="status"><%= @status %></h1>
 
 <div id="timelinePanel">
@@ -16,5 +18,7 @@
 
 jQuery(function loadTimelint() {
 	$("#timelinePanel").load("/timeline/<%= @branch_name %>");
-});
+	});
+
+<% end %>
 </script>
