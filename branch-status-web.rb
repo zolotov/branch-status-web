@@ -29,14 +29,21 @@ helpers do
 
 	def git_timeline(branch_name)
 		timeline = {}
+		git_image_path = "/images/git.png"
 		begin
 			branch = branch(branch_name)
 			last_branch_commit = branch.gcommit
-			timeline[last_branch_commit.date] = { :action => "Last commit", :author => last_branch_commit.author.name }
+			timeline[last_branch_commit.date] = { :action => "Last commit",
+				:author => last_branch_commit.author.name,
+				:image => git_image_path
+		   	}
 			if branch.merged?
 				merge_commit = branch.merge_commit
 				unless merge_commit.nil?
-					timeline[merge_commit.date] = { :action => "Merge", :author => merge_commit.author.name }
+					timeline[merge_commit.date] = { :action => "Merge",
+						:author => merge_commit.author.name,
+						:image => git_image_path
+					}
 				end
 			end
 		rescue
@@ -56,11 +63,16 @@ helpers do
 
 	def jira_timeline(branch_name)
 		timeline = {}
+		jira_image_path = "/images/jira.png"
 		begin
 			issue = jira_service.issue_with_key branch_name
-			timeline[issue.create_time] = { :action => "Create issue", :author => issue.reporter_username }
+			timeline[issue.create_time] = { :action => "Create issue",
+				:author => issue.reporter_username,
+				:image => jira_image_path
+			}
 			unless issue.create_time == issue.last_updated_time
-				timeline[issue.last_updated_time] = { :action => "Update issue" } 
+				timeline[issue.last_updated_time] = { :action => "Update issue", :image => jira_image_path }
+				
 			end
 		rescue
 			p $!
