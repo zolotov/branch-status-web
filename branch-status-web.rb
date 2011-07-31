@@ -40,6 +40,11 @@ helpers do
 		status
 	end
 
+	def branch(branch_name)
+		branch_name = branch_name.include?("/") ? branch_name : "origin/#{branch_name}"
+		@@repo.branch(branch_name)
+	end
+
 	def jira(branch_name)
 		status = {}
 		begin
@@ -61,14 +66,9 @@ helpers do
 end
 
 get '/' do
-	@branch = params[:branch]
-	unless @branch.nil?
-		@statuses = {
-			'Git' => {:image => "/images/git.png", :status => git(@branch)},
-			'JIRA' => {:image => "/images/jira.png", :status => jira(@branch)}
-		}
-	end
-
+	@branch_name = params[:branch]
+	@branch = branch @branch_name
+	@status = @branch.merged? ? "Merged" : "Not merged"
 	erb :index
 end
 

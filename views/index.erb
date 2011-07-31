@@ -1,8 +1,24 @@
 <div id="queryPanel">
 	<form id="queryForm" method="GET">
-		<input id="queryField" maxlength="25" placeholder="Branch name" autofocus type="search" name="branch" value="<%= @branch %>"/>
+		<input id="queryField" maxlength="25" placeholder="Branch name" autofocus type="search" name="branch" value="<%= @branch_name %>"/>
 		<input id="querySubmit" type="submit" value="Status"/>
 	</form>
+</div>
+
+<h1 id="status"><%= @status %></h1>
+
+<div id="timelinePanel">
+	<a href="#" id="timelineLink">Timeline</a>
+	<table id="timeline">
+		<tr>
+			<td class="dateCell">10.12.2010 14:05</td>
+			<td class="actionCell">
+				<img src="images/jira.png"/> 
+				Task created
+			</td>
+			<td class="authorCell"><a href="mailto://zolotov@farpost.com">Alexander Zolotov</a></td>
+		</tr>
+	</table>
 </div>
 
 <% if @statuses %>
