@@ -7,8 +7,9 @@ require 'jiraSOAP'
 configure { @config = YAML.load_file("config/config.yml") }
 
 configure do
-	@@repo = GitUtils::Repo.new @config["git"]["path"],
-		@config["git"]["remote"]
+	@@git_config = {}
+	@@git_config[:path] = @config["git"]["path"]
+	@@git_config[:remote] = @config["git"]["remote"]
 
 	@@jira_config = {}
 	@@jira_config[:url] = @config["jira"]["url"]
@@ -16,15 +17,20 @@ configure do
 	@@jira_config[:password] = @config["jira"]["password"]
 end
 
-configure do
-	@@repo.fetch 'origin'
-	@@repo.branch.checkout
-end
-
 helpers do 
+	def repo
+		@@repo ||= nil
+		if @@repo.nil?
+			@@repo = GitUtils::Repo.new @@git_config[:path], @@git_config[:remote]
+			@@repo.fetch 'origin'
+			@@repo.branch.checkout
+		end
+		@@repo
+	end
+
 	def branch(branch_name)
 		branch_name = branch_name.include?("/") ? branch_name : "origin/#{branch_name}"
-		@@repo.branch(branch_name)
+		repo.branch(branch_name)
 	end
 
 	def git_timeline(branch_name)
@@ -54,7 +60,7 @@ helpers do
 
 	def jira_service
 		@@jira ||= nil
-		if(@@jira.nil?)
+		if @@jira.nil?
 			@@jira = JIRA::JIRAService.new @@jira_config[:url]
 			@@jira.login @@jira_config[:user], @@jira_config[:password]
 		end
@@ -91,6 +97,16 @@ get '/' do
 	end
 
 	erb :index
+end
+
+get '/issue/:issue' do |issue|
+	begin
+		@issue = jira_service.issue_with_key issue
+		@assignee = jira_service.user_with_name(@issue.assignee_username).full_name || @issue.assignee_username
+	rescue
+		p $!
+	end
+	erb :issue, :layout => !request.xhr?
 end
 
 get '/timeline/:branch' do |branch_name|

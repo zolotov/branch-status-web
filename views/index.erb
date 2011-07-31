@@ -13,12 +13,17 @@
 	<img src="/images/spinner.gif"/>
 </div>
 
+<div id="issuePanel">
+	<img src="/images/spinner.gif"/>
+</div>
+
 <script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript">
 
 jQuery(function loadTimelint() {
 	$("#timelinePanel").load("/timeline/<%= @branch_name %>");
-	});
+	$("#issuePanel").load("/issue/<%= @branch_name %>");
+});
 
 <% end %>
 </script>
