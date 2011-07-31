@@ -66,8 +66,9 @@ helpers do
 		jira_image_path = "/images/jira.png"
 		begin
 			issue = jira_service.issue_with_key branch_name
+			reporter = jira_service.user_with_name issue.reporter_username
 			timeline[issue.create_time] = { :action => "Create issue",
-				:author => issue.reporter_username,
+				:author => reporter.full_name || issue.reporter_username,
 				:image => jira_image_path
 			}
 			unless issue.create_time == issue.last_updated_time
