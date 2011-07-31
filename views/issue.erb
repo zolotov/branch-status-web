@@ -1,0 +1,18 @@
+<% if @issue %>
+	<div id="issue">
+		<p>
+			<span class="issueFieldName">Summary</span><br/>
+			<span class="issueFieldValue"><%= @issue.summary %></span>
+		</p>
+		<p>
+			<span class="issueFieldName">Description</span><br/>
+			<span class="issueFieldValue"><%= @issue.description %></span>
+		</p>
+		<p>
+			<span class="issueFieldName">Assignee</span><br/>
+			<span class="issueFieldValue"><%= @assignee %></span>
+		</p>
+	</div>
+<% else %>
+	No information about issue
+<% end %>
