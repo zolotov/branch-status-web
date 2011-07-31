@@ -12,6 +12,8 @@
 #timelinePanel a { color: #222; text-decoration: none; border-bottom: 1px dotted #222; }
 #timelinePanel a:hover { color: #555; border-bottom: 1px dotted #555; }
 
+#timelineContainer { display: none; }
+
 #timeline { border-spacing: 0; border-collapse: collapse; margin-top: 10px; }
 #timeline td { border: 1px solid #eee; vertical-align: middle; }
 #timeline td img { width: 24px; height: 24px; vertical-align: middle; }

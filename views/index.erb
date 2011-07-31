@@ -9,4 +9,19 @@
 
 <div id="timelinePanel">
 	<a href="#" id="timelineLink">Timeline</a>
+	<div id="timelineContainer">
+		<img src="/images/spinner.gif"/>
+	</div>
 </div>
+
+<script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript">
+$("#timelineLink").click(function() {
+	$(this).hide();
+	$("#timelineContainer").show();
+});
+
+jQuery(function loadTimelint() {
+	$("#timelineContainer").load("/timeline/<%= @branch_name %>");
+});
+</script>
