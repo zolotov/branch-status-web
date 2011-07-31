@@ -16,7 +16,8 @@
 
 <script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript">
-$("#timelineLink").click(function() {
+$("#timelineLink").click(function(e) {
+	e.preventDefault();
 	$(this).hide();
 	$("#timelineContainer").show();
 });
