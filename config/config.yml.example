@@ -3,5 +3,6 @@ git:
  path: /tmp/repo
 
 jira:
+ url: http://jira.dev
  user: login
  password: password
