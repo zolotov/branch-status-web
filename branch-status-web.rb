@@ -10,9 +10,10 @@ configure do
 	@@repo = GitUtils::Repo.new @config["git"]["path"],
 		@config["git"]["remote"]
 
-	@@jira = {}
-	@@jira[:user] = @config["jira"]["user"]
-	@@jira[:password] = @config["jira"]["password"]
+	@@jira_config = {}
+	@@jira_config[:url] = @config["jira"]["url"]
+	@@jira_config[:user] = @config["jira"]["user"]
+	@@jira_config[:password] = @config["jira"]["password"]
 end
 
 configure do
@@ -21,47 +22,51 @@ configure do
 end
 
 helpers do 
-	def git(branch_name)
-		branch_name = branch_name.include?("/") ? branch_name : "origin/#{branch_name}"
-		status = {}
-		begin
-			branch = @@repo.branch(branch_name)			
-
-			last_branch_commit = branch.gcommit
-			status["Last commit"] =  last_branch_commit.date.strftime("%d.%m.%Y %H:%M:%S")
-			if branch.merged?
-				status["Merged"] = branch.merge_commit.date.strftime("%d.%m.%Y %H:%M:%S")
-			else
-				status["Merged"] = "no"
-			end
-		rescue
-			status["Error"] = "Branch not found"
-		end
-		status
-	end
-
 	def branch(branch_name)
 		branch_name = branch_name.include?("/") ? branch_name : "origin/#{branch_name}"
 		@@repo.branch(branch_name)
 	end
 
-	def jira(branch_name)
-		status = {}
+	def git_timeline(branch_name)
+		timeline = {}
 		begin
-			jira = JIRA::JIRAService.new 'http://jira.dev'
-			jira.login @@jira[:user], @@jira[:password]
-			issue = jira.issue_with_key branch_name
-
-			status["Summary"] = issue.summary
-			status["Status"] = jira.statuses.select{|status| issue.status_id == status.id}.first.name
+			branch = branch(branch_name)
+			last_branch_commit = branch.gcommit
+			timeline[last_branch_commit.date] = { :action => "Last commit", :author => last_branch_commit.author.name }
+			if branch.merged?
+				merge_commit = branch.merge_commit
+				unless merge_commit.nil?
+					timeline[merge_commit.date] = { :action => "Merge", :author => merge_commit.author.name }
+				end
+			end
 		rescue
-			status["Error"] = "Issue not found"
 		end
-		status
+
+		timeline
 	end
 
-	def logger
-		request.logger
+	def jira_service
+		@@jira ||= nil
+		if(@@jira.nil?)
+			@@jira = JIRA::JIRAService.new @@jira_config[:url]
+			@@jira.login @@jira_config[:user], @@jira_config[:password]
+		end
+		@@jira
+	end
+
+	def jira_timeline(branch_name)
+		timeline = {}
+		begin
+			issue = jira_service.issue_with_key branch_name
+			timeline[issue.create_time] = { :action => "Create issue", :author => issue.reporter_username }
+			unless issue.create_time == issue.last_updated_time
+				timeline[issue.last_updated_time] = { :action => "Update issue" } 
+			end
+		rescue
+			p $!
+		end
+
+		timeline
 	end
 end
 
@@ -72,16 +77,11 @@ get '/' do
 	erb :index
 end
 
-get '/jira/:branch' do |branch|
-	@title = "JIRA"
-	@image = "/images/jira.png"
-	@status = jira branch
-	erb :widget, :layout => !request.xhr?
-end
+get '/timeline/:branch' do |branch_name|
+	@timeline = {}
+	@timeline.merge! jira_timeline branch_name
+	@timeline.merge! git_timeline branch_name
+	@timeline.sort
 
-get '/git/:branch' do |branch|
-	@title = "Git"
-	@image = "/images/git.png"
-	@status = git branch
-	erb :widget, :layout => !request.xhr?
+	erb :timeline, :layout => !request.xhr?
 end

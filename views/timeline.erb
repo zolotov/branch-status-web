@@ -1,0 +1,17 @@
+<% unless @timeline.empty? %>
+	<table id="timeline">
+		<% @timeline.each do |date, action| %>
+			<tr>
+				<td class="dateCell"><%= date.strftime("%d.%m.%Y %H:%M:%S") %></td>
+				<td class="actionCell">
+					<img src="<%= action[:image] %>"/> 
+					<%= action[:action] %>
+				</td>
+				<td class="authorCell"><%= action[:author] %></td>
+			</tr>
+		<% end %>
+	</table>
+
+<% else %>
+	<div id="timeline">No information about branch</div>
+<% end %>

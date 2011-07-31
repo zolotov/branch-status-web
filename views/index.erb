@@ -9,23 +9,4 @@
 
 <div id="timelinePanel">
 	<a href="#" id="timelineLink">Timeline</a>
-	<table id="timeline">
-		<tr>
-			<td class="dateCell">10.12.2010 14:05</td>
-			<td class="actionCell">
-				<img src="images/jira.png"/> 
-				Task created
-			</td>
-			<td class="authorCell"><a href="mailto://zolotov@farpost.com">Alexander Zolotov</a></td>
-		</tr>
-	</table>
 </div>
-
-<% if @statuses %>
-	<% @statuses.each do |name, status| %>
-		<% @title = name %>
-		<% @image = status[:image] %>
-		<% @status = status[:status] %>
-		<%= erb :widget, %>
-	<% end %>
-<% end %>
