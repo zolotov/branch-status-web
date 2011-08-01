@@ -22,10 +22,9 @@ helpers do
 		@@repo ||= nil
 		if @@repo.nil?
 			@@repo = GitUtils::Repo.new @@git_config[:path], @@git_config[:remote]
-			@@repo.fetch 'origin'
-			@@repo.branch.checkout
 		end
 		@@repo.fetch 'origin'
+		@@repo.branch('origin/master').checkout
 		@@repo
 	end
 
