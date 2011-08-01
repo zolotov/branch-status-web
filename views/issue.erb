@@ -6,7 +6,7 @@
 		</p>
 		<p>
 			<span class="issueFieldName">Description</span><br/>
-			<span class="issueFieldValue"><%= @issue.description %></span>
+			<span class="issueFieldValue"><%= @issue.description.gsub!(/\n/, '<br/>') %></span>
 		</p>
 		<p>
 			<span class="issueFieldName">Assignee</span><br/>
