@@ -25,6 +25,7 @@ helpers do
 			@@repo.fetch 'origin'
 			@@repo.branch.checkout
 		end
+		@@repo.fetch 'origin'
 		@@repo
 	end
 
