@@ -62,15 +62,19 @@ helpers do
 		@@jira ||= nil
 		if @@jira.nil?
 			@@jira = JIRA::JIRAService.new @@jira_config[:url]
-			@@jira.login @@jira_config[:user], @@jira_config[:password]
 		end
 		@@jira
+	end
+
+	def jira_login
+		jira_service.login @@jira_config[:user], @@jira_config[:password]
 	end
 
 	def jira_timeline(branch_name)
 		timeline = {}
 		jira_image_path = "/images/jira.png"
 		begin
+			jira_login
 			issue = jira_service.issue_with_key branch_name
 			reporter = jira_service.user_with_name issue.reporter_username
 			timeline[issue.create_time] = { :action => "Create issue",
@@ -101,6 +105,7 @@ end
 
 get '/issue/:issue' do |issue|
 	begin
+		jira_login
 		@issue = jira_service.issue_with_key issue
 		@assignee = jira_service.user_with_name(@issue.assignee_username).full_name || @issue.assignee_username
 	rescue
