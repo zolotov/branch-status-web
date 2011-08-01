@@ -35,7 +35,7 @@ end
 
 namespace :configuration do
 	task :symlink do
-		run "ln -s #{deploy_to}/config.yml #{current_release}/config/config.yml"
+		run "ln -s #{deploy_to}/shared/config.yml #{current_release}/config/config.yml"
 	end
 end
 
