@@ -2,7 +2,7 @@
 	<table id="timeline">
 		<% @timeline.each do |date, action| %>
 			<tr>
-				<td class="dateCell"><%= date.strftime("%d.%m.%Y %H:%M:%S") %></td>
+				<td class="dateCell"><%= date.getlocal.strftime("%d.%m.%Y %H:%M:%S") %></td>
 				<td class="actionCell">
 					<img src="<%= action[:image] %>"/> 
 					<%= action[:action] %>
