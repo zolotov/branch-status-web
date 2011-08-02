@@ -6,3 +6,6 @@ jira:
  url: http://jira.dev
  user: login
  password: password
+
+production:
+ current_url: http://production.dev/revision

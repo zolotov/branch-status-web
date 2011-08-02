@@ -3,6 +3,7 @@ require 'sinatra'
 require 'yaml'
 require 'lib/git/lib/gitutils'
 require 'jiraSOAP'
+require 'net/http'
 
 configure { @config = YAML.load_file("config/config.yml") }
 
@@ -15,6 +16,9 @@ configure do
 	@@jira_config[:url] = @config["jira"]["url"]
 	@@jira_config[:user] = @config["jira"]["user"]
 	@@jira_config[:password] = @config["jira"]["password"]
+
+	@@production_config = {}
+	@@production_config[:current_url] = @config["production"]["current_url"]
 end
 
 helpers do 
@@ -91,13 +95,36 @@ helpers do
 
 		timeline
 	end
+
+	def build_to_date(build)
+		begin
+			Time.new build[0..3], build[4..5], build[6..7], build[9..10], build[11..12]
+		rescue
+			p "#{$!}. Date '#{build}' given"
+			Time.new "1970"
+		end
+	end
+
+	def production_revision_date
+		build = Net::HTTP.get URI.parse(@@production_config[:current_url])
+		build_to_date build
+	end
 end
 
 get '/' do
 	unless params[:branch].nil?
 		@branch_name = params[:branch]
 		@branch = branch @branch_name
-		@status = @branch.merged? ? "Merged" : "Not merged"
+		if @branch.merged? 
+			merge_commit = @branch.merge_commit
+			if merge_commit.date and merge_commit.date < production_revision_date
+				@status = "In production"
+			else
+				@status = "Merged"
+			end
+		else
+			@status = "Not merged"
+		end
 	end
 
 	erb :index
