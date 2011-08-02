@@ -46,7 +46,7 @@ helpers do
 			timeline[last_branch_commit.date] = { :action => "Last commit",
 				:author => last_branch_commit.author.name,
 				:image => git_image_path
-		   	}
+			}
 			if branch.merged?
 				merge_commit = branch.merge_commit
 				unless merge_commit.nil?
@@ -115,7 +115,7 @@ get '/' do
 	unless params[:branch].nil?
 		@branch_name = params[:branch]
 		@branch = branch @branch_name
-		if @branch.merged? 
+		if @branch.merged?
 			merge_commit = @branch.merge_commit
 			if merge_commit.date and merge_commit.date < production_revision_date
 				@status = "In production"
