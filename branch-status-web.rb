@@ -117,7 +117,7 @@ get '/' do
 		@branch = branch @branch_name
 		if @branch.merged?
 			merge_commit = @branch.merge_commit
-			if merge_commit.date and merge_commit.date < production_revision_date
+			if merge_commit and merge_commit.date < production_revision_date
 				@status = "In production"
 			else
 				@status = "Merged"
