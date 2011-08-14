@@ -116,11 +116,11 @@ get '/' do
 		@branch_name = params[:branch]
 		@branch = branch @branch_name
 		if @branch.merged?
-			merge_commit = @branch.merge_commit
-			if merge_commit and merge_commit.date < production_revision_date
-				@status = "In production"
-			else
-				@status = "Merged"
+			@status = "Merged"
+			begin
+				merge_commit = @branch.merge_commit
+				@status = "In production" if merge_commit and merge_commit.date < production_revision_date					
+			rescue
 			end
 		else
 			@status = "Not merged"
