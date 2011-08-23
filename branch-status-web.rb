@@ -113,7 +113,7 @@ end
 
 get '/' do
 	unless params[:branch].nil?
-		@branch_name = params[:branch]
+		@branch_name = params[:branch].upcase
 		@branch = branch @branch_name
 		if @branch.merged?
 			@status = "Merged"
