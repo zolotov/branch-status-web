@@ -7,7 +7,7 @@
 		<% unless @issue.description.empty? %>
 		<p>
 			<span class="issueFieldName">Description</span><br/>
-			<span class="issueFieldValue"><%= @issue.description.gsub!(/\n/, '<br/>') %></span>
+			<span class="issueFieldValue"><%= @issue.description.gsub(/\n/, '<br/>') %></span>
 		</p>
 		<% end%>
 		<p>
