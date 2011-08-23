@@ -4,10 +4,12 @@
 			<span class="issueFieldName">Summary</span><br/>
 			<span class="issueFieldValue"><%= @issue.summary %></span>
 		</p>
+		<% unless @issue.description.empty? %>
 		<p>
 			<span class="issueFieldName">Description</span><br/>
 			<span class="issueFieldValue"><%= @issue.description.gsub!(/\n/, '<br/>') %></span>
 		</p>
+		<% end%>
 		<p>
 			<span class="issueFieldName">Assignee</span><br/>
 			<span class="issueFieldValue"><%= @assignee %></span>
