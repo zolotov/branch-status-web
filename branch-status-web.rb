@@ -4,6 +4,7 @@ require 'yaml'
 require 'lib/git/lib/gitutils'
 require 'jiraSOAP'
 require 'net/http'
+require 'json'
 
 configure { @config = YAML.load_file("config/config.yml") }
 
@@ -19,6 +20,7 @@ configure do
 
 	@@production_config = {}
 	@@production_config[:current_url] = @config["production"]["current_url"]
+	@@production_config[:log_url] = @config["production"]["log_url"]
 end
 
 helpers do 
@@ -96,6 +98,50 @@ helpers do
 		timeline
 	end
 
+	def switch_timeline(branch_name)
+		timeline = {}
+		switch_image_path="";
+		branch = branch(branch_name)
+		if branch.merged?
+			merge_commit = branch.merge_commit
+			unless merge_commit.nil?
+				#timeline[merge_commit.date] = { :action => "Switch", :image => switch_image_path }
+				switch_log = JSON.parse(Net::HTTP.get URI.parse(@@production_config[:log_url]))
+				timeline = internal_switch_timeline switch_log, merge_commit.date, {}
+			end
+		end		
+
+		timeline
+	end
+
+	def internal_switch_timeline log, merge_date, timeline
+		log.each do |switch_date, build|
+			date = Time.at switch_date.to_i
+			if date > merge_date
+				timeline[date] = { :action => "Switch" }
+				log.delete(switch_date)
+				break
+			else
+				log.delete(switch_date)
+			end
+		end
+		log.each do |switch_date, build|
+			date = Time.at switch_date.to_i
+			if date < merge_date
+				timeline[date] = { :action => "Rollback" }
+				log.delete(switch_date)
+				break
+			else
+				log.delete(switch_date)
+			end
+		end
+		if log.empty? 
+			timeline
+		else
+			internal_switch_timeline log, merge_date, timeline
+		end
+	end
+
 	def build_to_date(build)
 		begin
 			Time.new build[0..3], build[4..5], build[6..7], build[9..10], build[11..12]
@@ -145,6 +191,7 @@ get '/timeline/:branch' do |branch_name|
 	timeline = {}
 	timeline.merge! jira_timeline branch_name
 	timeline.merge! git_timeline branch_name
+	timeline.merge! switch_timeline branch_name
 	
 	@timeline = timeline.sort.reverse
 	erb :timeline, :layout => !request.xhr?
