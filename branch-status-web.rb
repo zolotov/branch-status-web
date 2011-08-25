@@ -105,11 +105,10 @@ helpers do
 		if branch.merged?
 			merge_commit = branch.merge_commit
 			unless merge_commit.nil?
-				#timeline[merge_commit.date] = { :action => "Switch", :image => switch_image_path }
 				switch_log = JSON.parse(Net::HTTP.get URI.parse(@@production_config[:log_url]))
 				timeline = internal_switch_timeline switch_log, merge_commit.date, {}
 			end
-		end		
+		end
 
 		timeline
 	end
@@ -118,7 +117,7 @@ helpers do
 		log.each do |switch_date, build|
 			date = Time.at switch_date.to_i
 			if date > merge_date
-				timeline[date] = { :action => "Switch" }
+				timeline[date] = { :action => "Switch", :image => "/images/switch.gif" }
 				log.delete(switch_date)
 				break
 			else
@@ -128,14 +127,14 @@ helpers do
 		log.each do |switch_date, build|
 			date = Time.at switch_date.to_i
 			if date < merge_date
-				timeline[date] = { :action => "Rollback" }
+				timeline[date] = { :action => "Rollback", :image => "/images/rollback.png" }
 				log.delete(switch_date)
 				break
 			else
 				log.delete(switch_date)
 			end
 		end
-		if log.empty? 
+		if log.empty?
 			timeline
 		else
 			internal_switch_timeline log, merge_date, timeline
