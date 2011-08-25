@@ -9,3 +9,4 @@ jira:
 
 production:
  current_url: http://production.dev/revision
+ log_url: http://production.dev/revision
