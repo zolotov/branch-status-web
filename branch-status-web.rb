@@ -105,7 +105,7 @@ helpers do
 		if branch.merged?
 			merge_commit = branch.merge_commit
 			unless merge_commit.nil?
-				switch_log = JSON.parse(Net::HTTP.get URI.parse(@@production_config[:log_url]))
+				switch_log = JSON.parse(Net::HTTP.get URI.parse("#{@@production_config[:log_url]}?since=#{merge_commit.date.to_date.to_s}"))
 				timeline = internal_switch_timeline switch_log, merge_commit.date, {}
 			end
 		end
